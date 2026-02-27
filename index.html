@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
@@ -11,7 +11,6 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── LIGHT MODE (default) ── */
     :root {
       --bg:          #f5f3ef;
       --bg-2:        #eceae5;
@@ -29,7 +28,6 @@
       --mono:        'IBM Plex Mono', 'Courier New', monospace;
     }
 
-    /* ── DARK MODE ── */
     [data-theme="dark"] {
       --bg:          #0d0d0d;
       --bg-2:        #141414;
@@ -46,12 +44,10 @@
       --border-l:    #333;
     }
 
-    /* ── THEME TRANSITION ── */
     body, .status-bar, section, .hs, .step,
     .cta-window, .cta-win-hdr, .email-in, footer,
     .parcel-tbl tbody tr, .theme-toggle {
-      transition: background-color 0.2s ease, color 0.2s ease,
-                  border-color 0.2s ease;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
     html { font-size: 16px; scroll-behavior: smooth; }
@@ -60,7 +56,6 @@
       font-family: var(--mono); line-height: 1.5; min-height: 100vh;
     }
 
-    /* ── STATUS BAR ── */
     .status-bar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       height: 32px; background: var(--bg-2); border-bottom: 1px solid var(--border);
@@ -85,13 +80,11 @@
     .sb-stat { color: var(--dim); }
     .sb-stat b { color: var(--text); font-weight: 400; }
 
-    /* ── THEME TOGGLE ── */
     .theme-toggle {
       background: none; border: 1px solid var(--border);
       color: var(--dim); cursor: pointer;
       padding: 0; width: 26px; height: 22px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .theme-toggle:hover { color: var(--text); border-color: var(--border-l); }
     .icon-sun  { display: none; }
@@ -99,11 +92,9 @@
     [data-theme="dark"] .icon-sun  { display: block; }
     [data-theme="dark"] .icon-moon { display: none; }
 
-    /* ── LAYOUT ── */
     main { padding-top: 32px; }
     .container { max-width: 900px; margin: 0 auto; padding: 0 28px; }
 
-    /* ── HERO ── */
     .hero { padding: 72px 0 64px; border-bottom: 1px solid var(--border); }
 
     .eyebrow {
@@ -122,7 +113,6 @@
       max-width: 520px; margin-bottom: 52px;
     }
 
-    /* Hero stats */
     .hero-stats {
       display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 1px; background: var(--border);
@@ -132,7 +122,6 @@
     .hs-val { font-size: 26px; font-weight: 600; color: var(--text-strong); margin-bottom: 4px; }
     .hs-lbl { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; }
 
-    /* ── SECTION HEADER ── */
     .sec-hdr { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
     .sec-hdr-label {
       font-size: 10px; color: var(--dim); text-transform: uppercase;
@@ -140,7 +129,6 @@
     }
     .sec-hdr-line { flex: 1; height: 1px; background: var(--border); }
 
-    /* ── SIGNAL PREVIEW ── */
     .signals { padding: 56px 0; border-bottom: 1px solid var(--border); }
 
     .parcel-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -172,7 +160,6 @@
     .tbl-note { margin-top: 14px; font-size: 11px; color: var(--muted); }
     .tbl-note b { color: var(--orange); font-weight: 400; }
 
-    /* ── SIGNAL STACK ── */
     .stack { padding: 56px 0; border-bottom: 1px solid var(--border); }
 
     .steps {
@@ -184,7 +171,6 @@
     .step-title { font-size: 13px; font-weight: 500; color: var(--text-strong); margin-bottom: 10px; }
     .step-desc  { font-size: 12px; color: var(--dim); line-height: 1.65; }
 
-    /* ── CTA ── */
     .cta { padding: 72px 0 80px; }
     .cta-window { border: 1px solid var(--border); background: var(--bg-2); }
     .cta-win-hdr {
@@ -227,7 +213,6 @@
     .form-msg.ok  { color: var(--green); }
     .form-msg.err { color: var(--red); }
 
-    /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border); padding: 22px 28px;
       max-width: 900px; margin: 0 auto;
@@ -237,7 +222,6 @@
     footer a { color: var(--muted); text-decoration: none; }
     footer a:hover { color: var(--dim); }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 620px) {
       .status-right { display: none; }
       .steps { grid-template-columns: 1fr; }
@@ -252,7 +236,6 @@
 </head>
 <body>
 
-<!-- Theme applied before paint via inline script to prevent flash -->
 <script>
   (function() {
     var t = localStorage.getItem('ds-theme') || 'light';
@@ -260,7 +243,7 @@
   })();
 </script>
 
-<!-- ── STATUS BAR ── -->
+<!-- STATUS BAR -->
 <div class="status-bar">
   <div class="status-left">
     <span class="live">LIVE</span>
@@ -268,11 +251,10 @@
     <span class="sb-stat"><b>1,231</b> PARCELS</span>
   </div>
   <div class="status-right">
-    <span class="sb-stat">SIGNAL: <b>TAX DELINQUENCY + CODE VIOLATIONS</b></span>
+    <span class="sb-stat">DISTRESSED PROPERTY INTELLIGENCE</span>
     <span class="sb-stat">DELTASCANNER v0.1</span>
   </div>
   <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-    <!-- Sun icon — shown in dark mode to switch to light -->
     <svg class="icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="5"/>
@@ -283,7 +265,6 @@
       <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
       <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
     </svg>
-    <!-- Moon icon — shown in light mode to switch to dark -->
     <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -293,12 +274,12 @@
 
 <main>
 
-<!-- ── HERO ── -->
+<!-- HERO -->
 <section class="hero">
   <div class="container">
     <p class="eyebrow">Distressed Property Intelligence</p>
     <h1>Before it hits<br>the <em>market.</em></h1>
-    <p class="hero-sub">Austin TX live. More cities coming.</p>
+    <p class="hero-sub">Motivated sellers. Ranked by distress intensity. Austin TX live — more cities coming.</p>
     <div class="hero-stats">
       <div class="hs">
         <div class="hs-val">1,231</div>
@@ -316,7 +297,7 @@
   </div>
 </section>
 
-<!-- ── SIGNAL PREVIEW ── -->
+<!-- SIGNAL PREVIEW -->
 <section class="signals">
   <div class="container">
     <div class="sec-hdr">
@@ -336,7 +317,7 @@
       </thead>
       <tbody>
         <tr>
-          <td><span class="score score-hi">94</span></td>
+          <td><span class="score score-hi">84</span></td>
           <td>WPOI AUSTIN MULTIFAMILY LLC</td>
           <td>$301,247</td>
           <td>46 active</td>
@@ -359,49 +340,48 @@
       </tbody>
     </table>
     <p class="tbl-note">
-      Sample from <b>deltascanner-scored-parcels-austin.csv</b> — 1,231 rows, 17 columns.
-      Full dataset available to pilot users.
+      Sample from the Austin TX pilot dataset. <b>Full dataset available to pilot users.</b>
     </p>
   </div>
 </section>
 
-<!-- ── SIGNAL STACK ── -->
+<!-- HOW IT WORKS -->
 <section class="stack">
   <div class="container">
     <div class="sec-hdr">
-      <span class="sec-hdr-label">Signal Stack</span>
+      <span class="sec-hdr-label">How It Works</span>
       <div class="sec-hdr-line"></div>
     </div>
     <div class="steps">
       <div class="step">
-        <div class="step-num">01 // SOURCE</div>
-        <div class="step-title">Tax Delinquency Records</div>
+        <div class="step-num">01 // IDENTIFY</div>
+        <div class="step-title">Public Distress Signals</div>
         <div class="step-desc">
-          County-level public data. Delinquency amount, years outstanding,
-          payment history. Weighted 45% of composite score.
+          We monitor municipal and county records across multiple data sources
+          to identify properties showing early signs of owner distress.
         </div>
       </div>
       <div class="step">
-        <div class="step-num">02 // JOIN</div>
-        <div class="step-title">Code Violation Data</div>
+        <div class="step-num">02 // SCORE</div>
+        <div class="step-title">Composite Distress Ranking</div>
         <div class="step-desc">
-          Municipal Socrata APIs. Active complaints, case severity,
-          inspection history. Address-normalized join across both datasets.
+          Each parcel receives a 0–100 distress score based on signal intensity,
+          recency, and case activity. Higher scores mean more motivated sellers.
         </div>
       </div>
       <div class="step">
-        <div class="step-num">03 // OUTPUT</div>
-        <div class="step-title">Composite Distress Score</div>
+        <div class="step-num">03 // ACT</div>
+        <div class="step-title">Before the Market Knows</div>
         <div class="step-desc">
-          0–100 per parcel. Delinquency + recency +
-          active cases. Ranked and ready to screen.
+          Ranked, filtered, and ready to work. Reach distressed owners
+          before they list — or before your competition does.
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── CTA ── -->
+<!-- CTA -->
 <section class="cta" id="access">
   <div class="container">
     <div class="cta-window">
@@ -412,10 +392,6 @@
           We're onboarding a small group of operators for the Austin TX pilot.
           Leave your email — we'll reach out with access details.
         </p>
-        <!--
-          SETUP: formspree.io → New Form → copy your Form ID (8 chars)
-          Replace YOUR_FORM_ID below, e.g. 'xwvnzqvl'
-        -->
         <form class="form-row" id="signup-form">
           <input
             class="email-in" type="email" name="email"
@@ -437,7 +413,6 @@
 </footer>
 
 <script>
-  // ── Theme toggle ──
   const html   = document.documentElement;
   const toggle = document.getElementById('theme-toggle');
 
@@ -446,7 +421,6 @@
     toggle.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
   }
 
-  // Respect saved preference (inline script above handled initial paint)
   applyTheme(localStorage.getItem('ds-theme') || 'light');
 
   toggle.addEventListener('click', function() {
@@ -455,8 +429,6 @@
     localStorage.setItem('ds-theme', next);
   });
 
-  // ── Email capture via Formspree ──
-  // SETUP: formspree.io → New Form → copy Form ID (8 chars, e.g. 'xwvnzqvl')
   const FORMSPREE_ID = 'xwvnzqvl';
 
   const form = document.getElementById('signup-form');
@@ -494,4 +466,3 @@
 </script>
 </body>
 </html>
-```
