@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Distressed property intelligence. Tax delinquency + code violations, joined and scored. Austin TX and growing.">
+  <title>DeltaScanner — Distressed Property Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d0d0d;
+      --bg-2:     #141414;
+      --bg-3:     #1c1c1c;
+      --text:     #d8d8d8;
+      --dim:      #888;
+      --muted:    #444;
+      --orange:   #f7a800;
+      --orange-d: #b87a00;
+      --green:    #00b347;
+      --red:      #e03030;
+      --border:   #282828;
+      --border-l: #333;
+      --mono:     'IBM Plex Mono', 'Courier New', monospace;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 32px;
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
+      font-size: 11px; color: var(--dim); letter-spacing: 0.05em;
+    }
+    .status-left { display: flex; align-items: center; gap: 28px; }
+    .status-right { display: flex; align-items: center; gap: 28px; }
+
+    .live {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--green); font-weight: 600; font-size: 10px; letter-spacing: 0.12em;
+    }
+    .live::before {
+      content: ''; display: inline-block;
+      width: 6px; height: 6px; background: var(--green); border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+    .sb-stat { color: var(--dim); }
+    .sb-stat b { color: var(--text); font-weight: 400; }
+
+    /* ── LAYOUT ── */
+    main { padding-top: 32px; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── HERO ── */
+    .hero { padding: 72px 0 64px; border-bottom: 1px solid var(--border); }
+
+    .eyebrow {
+      font-size: 11px; color: var(--orange); letter-spacing: 0.18em;
+      text-transform: uppercase; margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 5.5vw, 54px);
+      font-weight: 600; color: #f0f0f0;
+      line-height: 1.08; letter-spacing: -0.025em;
+      margin-bottom: 24px;
+    }
+    h1 em { color: var(--orange); font-style: normal; }
+
+    .hero-sub {
+      font-size: 14px; color: var(--dim); line-height: 1.65;
+      max-width: 520px; margin-bottom: 52px;
+    }
+
+    /* Hero stats */
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); max-width: 520px;
+    }
+    .hs { background: var(--bg-2); padding: 18px 20px; }
+    .hs-val { font-size: 26px; font-weight: 600; color: #f0f0f0; margin-bottom: 4px; }
+    .hs-lbl { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* ── SECTION HEADER ── */
+    .sec-hdr {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 28px;
+    }
+    .sec-hdr-label {
+      font-size: 10px; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.15em; white-space: nowrap;
+    }
+    .sec-hdr-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── SIGNAL PREVIEW ── */
+    .signals { padding: 56px 0; border-bottom: 1px solid var(--border); }
+
+    .parcel-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .parcel-tbl thead th {
+      text-align: left; padding: 8px 14px;
+      color: var(--muted); font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      border-bottom: 1px solid var(--border); font-weight: 400;
+    }
+    .parcel-tbl tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    .parcel-tbl tbody tr:hover { background: var(--bg-2); }
+    .parcel-tbl tbody td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
+
+    .score {
+      display: inline-block; width: 38px; text-align: center;
+      padding: 2px 0; font-size: 12px; font-weight: 600; border: 1px solid;
+    }
+    .score-hi { color: var(--red); border-color: var(--red); }
+    .score-md { color: var(--orange); border-color: var(--orange); }
+    .score-lo { color: var(--dim); border-color: var(--border-l); }
+
+    .tag {
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 2px 7px; border: 1px solid var(--border); color: var(--dim);
+    }
+    .tag-alert {
+      color: var(--red); border-color: rgba(224,48,48,0.4);
+      background: rgba(224,48,48,0.06);
+    }
+
+    .tbl-note { margin-top: 14px; font-size: 11px; color: var(--muted); }
+    .tbl-note b { color: var(--orange); font-weight: 400; }
+
+    /* ── SIGNAL STACK ── */
+    .stack { padding: 56px 0; border-bottom: 1px solid var(--border); }
+
+    .steps {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+    }
+    .step { background: var(--bg); padding: 30px 26px; }
+    .step-num { font-size: 10px; color: var(--orange); letter-spacing: 0.1em; margin-bottom: 14px; }
+    .step-title { font-size: 13px; font-weight: 500; color: #f0f0f0; margin-bottom: 10px; }
+    .step-desc { font-size: 12px; color: var(--dim); line-height: 1.65; }
+
+    /* ── CTA ── */
+    .cta { padding: 72px 0 80px; }
+
+    .cta-window { border: 1px solid var(--border); background: var(--bg-2); }
+    .cta-win-hdr {
+      padding: 9px 18px; background: var(--bg-3);
+      border-bottom: 1px solid var(--border);
+      font-size: 10px; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.12em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cta-win-hdr::before { content: '>'; color: var(--orange); }
+
+    .cta-win-body { padding: 44px 44px; }
+
+    .cta-win-body h2 {
+      font-size: 22px; font-weight: 600; color: #f0f0f0; margin-bottom: 12px;
+    }
+    .cta-sub {
+      font-size: 13px; color: var(--dim); margin-bottom: 32px;
+      max-width: 440px; line-height: 1.65;
+    }
+
+    .form-row { display: flex; max-width: 480px; }
+
+    .email-in {
+      flex: 1; background: var(--bg); border: 1px solid var(--border-l);
+      border-right: none; color: var(--text);
+      font-family: var(--mono); font-size: 13px;
+      padding: 13px 16px; outline: none; transition: border-color 0.15s;
+    }
+    .email-in::placeholder { color: var(--muted); }
+    .email-in:focus { border-color: var(--orange); }
+
+    .submit-btn {
+      background: var(--orange); color: #000; border: none;
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; padding: 13px 24px;
+      cursor: pointer; text-transform: uppercase; white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .submit-btn:hover { background: #ffc133; }
+    .submit-btn:active { background: var(--orange-d); }
+    .submit-btn:disabled { opacity: 0.6; cursor: default; }
+
+    .form-msg { margin-top: 12px; font-size: 12px; min-height: 18px; }
+    .form-msg.ok  { color: var(--green); }
+    .form-msg.err { color: var(--red); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 22px 28px;
+      max-width: 900px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--dim); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 620px) {
+      .status-right { display: none; }
+      .steps { grid-template-columns: 1fr; }
+      .parcel-tbl th:nth-child(4), .parcel-tbl td:nth-child(4) { display: none; }
+      .form-row { flex-direction: column; }
+      .email-in { border-right: 1px solid var(--border-l); }
+      .cta-win-body { padding: 28px 24px; }
+      .hero { padding: 56px 0 48px; }
+      .hs-val { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── STATUS BAR ── -->
+<div class="status-bar">
+  <div class="status-left">
+    <span class="live">LIVE</span>
+    <span class="sb-stat">AUSTIN TX</span>
+    <span class="sb-stat"><b>1,231</b> PARCELS</span>
+  </div>
+  <div class="status-right">
+    <span class="sb-stat">SIGNAL: <b>TAX DELINQUENCY + CODE VIOLATIONS</b></span>
+    <span class="sb-stat">DELTASCANNER v0.1</span>
+  </div>
+</div>
+
+<main>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="container">
+    <p class="eyebrow">Distressed Property Intelligence</p>
+    <h1>Before it hits<br>the <em>market.</em></h1>
+    <p class="hero-sub">
+      Tax delinquency + code violations, joined and scored.
+      1,231 distressed parcels in Austin TX — and growing.
+    </p>
+    <div class="hero-stats">
+      <div class="hs">
+        <div class="hs-val">1,231</div>
+        <div class="hs-lbl">Scored Parcels</div>
+      </div>
+      <div class="hs">
+        <div class="hs-val">$301K</div>
+        <div class="hs-lbl">Top Delinquency</div>
+      </div>
+      <div class="hs">
+        <div class="hs-val">0–100</div>
+        <div class="hs-lbl">Distress Score</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SIGNAL PREVIEW ── -->
+<section class="signals">
+  <div class="container">
+    <div class="sec-hdr">
+      <span class="sec-hdr-label">Signal Preview — Austin TX</span>
+      <div class="sec-hdr-line"></div>
+      <span class="sec-hdr-label">Top Distressed Parcels</span>
+    </div>
+
+    <table class="parcel-tbl">
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Entity</th>
+          <th>Tax Delinquency</th>
+          <th>Code Cases</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="score score-hi">94</span></td>
+          <td>WPOI AUSTIN MULTIFAMILY LLC</td>
+          <td>$301,247</td>
+          <td>46 active</td>
+          <td><span class="tag tag-alert">Pre-Market</span></td>
+        </tr>
+        <tr>
+          <td><span class="score score-hi">78</span></td>
+          <td>— Redacted —</td>
+          <td>$124,800</td>
+          <td>12 active</td>
+          <td><span class="tag tag-alert">Pre-Market</span></td>
+        </tr>
+        <tr>
+          <td><span class="score score-md">61</span></td>
+          <td>— Redacted —</td>
+          <td>$67,400</td>
+          <td>8 active</td>
+          <td><span class="tag tag-alert">Pre-Market</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="tbl-note">
+      Sample from <b>deltascanner-scored-parcels-austin.csv</b> — 1,231 rows, 17 columns.
+      Full dataset available to pilot users.
+    </p>
+  </div>
+</section>
+
+<!-- ── SIGNAL STACK ── -->
+<section class="stack">
+  <div class="container">
+    <div class="sec-hdr">
+      <span class="sec-hdr-label">Signal Stack</span>
+      <div class="sec-hdr-line"></div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01 // SOURCE</div>
+        <div class="step-title">Tax Delinquency Records</div>
+        <div class="step-desc">
+          County-level public data. Delinquency amount, years outstanding,
+          payment history. Weighted 45% of composite score.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02 // JOIN</div>
+        <div class="step-title">Code Violation Data</div>
+        <div class="step-desc">
+          Municipal Socrata APIs. Active complaints, case severity,
+          inspection history. Address-normalized join across both datasets.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03 // OUTPUT</div>
+        <div class="step-title">Composite Distress Score</div>
+        <div class="step-desc">
+          0–100 per parcel. Delinquency (45%) + recency (25%) +
+          active cases (30%). Ranked and ready to screen.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta" id="access">
+  <div class="container">
+    <div class="cta-window">
+      <div class="cta-win-hdr">EARLY ACCESS // AUSTIN TX PILOT</div>
+      <div class="cta-win-body">
+        <h2>Get the Austin dataset.</h2>
+        <p class="cta-sub">
+          We're onboarding a small group of operators for the Austin TX pilot.
+          Leave your email — we'll reach out with access details.
+        </p>
+        <!--
+          SETUP: formspree.io → New Form → copy your Form ID
+          Replace YOUR_FORM_ID below (e.g. "xabcdefg")
+        -->
+        <form class="form-row" id="signup-form">
+          <input
+            class="email-in" type="email" name="email"
+            placeholder="your@email.com"
+            required autocomplete="email"
+          >
+          <button class="submit-btn" type="submit">Get Early Access</button>
+        </form>
+        <div class="form-msg" id="form-msg"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span>© 2026 DeltaScanner</span>
+  <span>deltascanner.com</span>
+</footer>
+
+<script>
+  // ── Email capture via Formspree ──
+  // SETUP: formspree.io → Log in → New Form → copy Form ID (8 chars)
+  // Paste it here:
+  const FORMSPREE_ID = 'https://formspree.io/f/xwvnzqvl';
+
+  const form = document.getElementById('signup-form');
+  const msg  = document.getElementById('form-msg');
+  const btn  = form.querySelector('button');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = form.querySelector('input').value.trim();
+
+    // Dev/placeholder mode — remove once Formspree is configured
+    if (FORMSPREE_ID === 'YOUR_FORM_ID') {
+      msg.textContent = '✓ Noted. (Activate by setting your Formspree ID.)';
+      msg.className = 'form-msg ok';
+      return;
+    }
+
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        msg.textContent = '✓ Got it. We\'ll reach out shortly.';
+        msg.className = 'form-msg ok';
+        form.reset();
+        btn.textContent = 'Sent';
+      } else {
+        throw new Error('non-ok');
+      }
+    } catch {
+      msg.textContent = '✗ Something went wrong. Try again or email directly.';
+      msg.className = 'form-msg err';
+      btn.textContent = 'Get Early Access';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
